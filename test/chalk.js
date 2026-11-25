@@ -142,7 +142,18 @@ test('properly convert ANSI 256 to 16 colors on basic color terminals', () => {
 	assert.equal(new Chalk({level: 1}).bgAnsi256(2)('hello'), '\u{1B}[42mhello\u{1B}[49m');
 	assert.equal(new Chalk({level: 1}).ansi256(8)('hello'), '\u{1B}[90mhello\u{1B}[39m');
 	assert.equal(new Chalk({level: 1}).ansi256(232)('hello'), '\u{1B}[30mhello\u{1B}[39m');
-	assert.equal(new Chalk({level: 1}).ansi256(255)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).ansi256(255)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+});
+
+test('downsample the grayscale ANSI 256 ramp into all three bright tiers', () => {
+	const color = new Chalk({level: 1});
+	assert.equal(color.ansi256(243)('hello'), '\u{1B}[30mhello\u{1B}[39m');
+	assert.equal(color.ansi256(244)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(color.ansi256(250)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(color.ansi256(251)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+
+	const ramp = Array.from({length: 24}, (_, index) => color.ansi256(232 + index)('x'));
+	assert.equal(new Set(ramp).size, 3);
 });
 
 test('keep ANSI 256 colors on 256 color and Truecolor terminals', () => {

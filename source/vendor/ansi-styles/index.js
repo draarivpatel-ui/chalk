@@ -226,7 +226,7 @@ function assembleStyles() {
 					blue = (remainder % 6) / 5;
 				}
 
-				const value = Math.max(red, green, blue) * 2;
+				const value = Math.round(Math.max(red, green, blue) * 2);
 
 				if (value === 0) {
 					return 30;
