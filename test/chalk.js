@@ -142,7 +142,19 @@ test('properly convert ANSI 256 to 16 colors on basic color terminals', () => {
 	assert.equal(new Chalk({level: 1}).bgAnsi256(2)('hello'), '\u{1B}[42mhello\u{1B}[49m');
 	assert.equal(new Chalk({level: 1}).ansi256(8)('hello'), '\u{1B}[90mhello\u{1B}[39m');
 	assert.equal(new Chalk({level: 1}).ansi256(232)('hello'), '\u{1B}[30mhello\u{1B}[39m');
-	assert.equal(new Chalk({level: 1}).ansi256(255)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).ansi256(255)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+});
+
+test('downsample the grayscale ramp to black, white and bright white on basic color terminals', () => {
+	// Matches the reference `color-convert` ansi256 -> ansi16 conversion.
+	assert.equal(new Chalk({level: 1}).ansi256(243)('hello'), '\u{1B}[30mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).ansi256(244)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).ansi256(250)('hello'), '\u{1B}[37mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).ansi256(251)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).bgAnsi256(251)('hello'), '\u{1B}[107mhello\u{1B}[49m');
+	assert.equal(new Chalk({level: 1}).ansi256(255)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).rgb(248, 248, 248)('hello'), '\u{1B}[97mhello\u{1B}[39m');
+	assert.equal(new Chalk({level: 1}).hex('#F8F8F8')('hello'), '\u{1B}[97mhello\u{1B}[39m');
 });
 
 test('keep ANSI 256 colors on 256 color and Truecolor terminals', () => {
