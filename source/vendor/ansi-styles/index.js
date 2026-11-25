@@ -211,8 +211,10 @@ function assembleStyles() {
 				let red;
 				let green;
 				let blue;
+				let grayscale = false;
 
 				if (code >= 232) {
+					grayscale = true;
 					red = (((code - 232) * 10) + 8) / 255;
 					green = red;
 					blue = red;
@@ -236,6 +238,11 @@ function assembleStyles() {
 				let result = 30 + ((Math.round(blue) << 2) | (Math.round(green) << 1) | Math.round(red));
 
 				if (value === 2) {
+					result += 60;
+				} else if (grayscale && value >= 1.5) {
+					// The grayscale ramp tops out at 238/255, so it never reaches exactly 2.
+					// 75% brightness is what the RGB conversion rounds up to bright white,
+					// so apply the same promotion to the top of the ramp.
 					result += 60;
 				}
 
